@@ -1,0 +1,161 @@
+asyncapi: 3.0.0
+info:
+  title: "Catalog Products"
+  version: 0.0.1
+  tags:
+    - name: "Default"
+    - name: "CatalogProducts"
+
+defaultContentType: application/json
+
+channels:
+  PaymentsEventsChannel:
+    address: "payments.events.payment-failed"
+    messages:
+      CancelOrderInputMessage:
+        $ref: '#/components/messages/CancelOrderInputMessage'
+  OrdersEventsChannel:
+    address: "orders.events.payment-timeout"
+    messages:
+      CancelOrderInputMessage:
+        $ref: '#/components/messages/CancelOrderInputMessage'
+  CatalogEventsChannel:
+    address: "catalog.events.order-cancelled"
+    messages:
+      OrderCancelledMessage:
+        $ref: '#/components/messages/OrderCancelledMessage'
+      StockReservedMessage:
+        $ref: '#/components/messages/StockReservedMessage'
+      StockUnavailableMessage:
+        $ref: '#/components/messages/StockUnavailableMessage'
+      PaymentFailedNotificationSentMessage:
+        $ref: '#/components/messages/PaymentFailedNotificationSentMessage'
+
+operations:
+  doCancelOrder:
+    action: receive
+    tags:
+      - name: CatalogProducts
+    channel:
+      $ref: '#/channels/PaymentsEventsChannel'
+    bindings:
+      kafka:
+        x-principal: sa_catalog_products
+  doCancelOrderOnTimeout:
+    action: receive
+    tags:
+      - name: CatalogProducts
+    channel:
+      $ref: '#/channels/OrdersEventsChannel'
+  onStockReserved:
+    action: send
+    tags:
+      - name: CatalogProducts
+    channel:
+      $ref: '#/channels/CatalogEventsChannel'
+  onStockUnavailable:
+    action: send
+    tags:
+      - name: CatalogProducts
+    channel:
+      $ref: '#/channels/CatalogEventsChannel'
+  onOrderCancelled:
+    action: send
+    tags:
+      - name: CatalogProducts
+    channel:
+      $ref: '#/channels/CatalogEventsChannel'
+  onPaymentFailedNotificationSent:
+    action: send
+    tags:
+      - name: CatalogProducts
+    channel:
+      $ref: '#/channels/CatalogEventsChannel'
+
+
+components:
+  messages:
+    CancelOrderInputMessage:
+      name: CancelOrderInputMessage
+      title: ""
+      summary: ""
+      traits:
+        - $ref: '#/components/messageTraits/CommonHeaders'
+      payload:
+        schemaFormat: application/vnd.apache.avro+json;version=1.9.0
+        schema:
+          $ref: "./avro/CancelOrderInput.avsc"
+    StockReservedMessage:
+      name: StockReservedMessage
+      title: ""
+      summary: ""
+      traits:
+        - $ref: '#/components/messageTraits/CommonHeaders'
+      payload:
+        schemaFormat: application/vnd.apache.avro+json;version=1.9.0
+        schema:
+          $ref: "./avro/StockReserved.avsc"
+    StockUnavailableMessage:
+      name: StockUnavailableMessage
+      title: ""
+      summary: ""
+      traits:
+        - $ref: '#/components/messageTraits/CommonHeaders'
+      payload:
+        schemaFormat: application/vnd.apache.avro+json;version=1.9.0
+        schema:
+          $ref: "./avro/StockUnavailable.avsc"
+    OrderCancelledMessage:
+      name: OrderCancelledMessage
+      title: ""
+      summary: ""
+      traits:
+        - $ref: '#/components/messageTraits/CommonHeaders'
+      payload:
+        schemaFormat: application/vnd.apache.avro+json;version=1.9.0
+        schema:
+          $ref: "./avro/OrderCancelled.avsc"
+    PaymentFailedNotificationSentMessage:
+      name: PaymentFailedNotificationSentMessage
+      title: ""
+      summary: ""
+      traits:
+        - $ref: '#/components/messageTraits/CommonHeaders'
+      payload:
+        schemaFormat: application/vnd.apache.avro+json;version=1.9.0
+        schema:
+          $ref: "./avro/PaymentFailedNotificationSent.avsc"
+
+  messageTraits:
+    CommonHeaders:
+      headers:
+        type: object
+        properties:
+          kafka_messageKey:
+            type: "integer"
+            format: "int64"
+            description: This header value will be populated automatically at runtime
+            x-runtime-expression: $message.payload#/id
+          # CloudEvents Attributes
+          ce-id:
+            type: string
+            description: Unique identifier for the event
+            x-runtime-expression: $message.payload#{#this.id}
+          ce-source:
+            type: string
+            description: URI identifying the context where event happened
+            x-runtime-expression: $message.payload#{"CatalogProducts"}
+          ce-specversion:
+            type: string
+            description: CloudEvents specification version
+            x-runtime-expression: $message.payload#{"1.0"}
+          ce-type:
+            type: string
+            description: Event type
+            x-runtime-expression: $message.payload#{#this.getClass().getSimpleName()}
+          ce-time:
+            type: string
+            description: Timestamp of when the event happened
+            x-runtime-expression: $message.payload#{T(java.time.Instant).now().toString()}
+
+

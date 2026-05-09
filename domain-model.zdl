@@ -1,0 +1,87 @@
+/**
+ * Arcadia Editions — Catalog Products Service
+ *
+ * Manages the product catalog, limited edition drops, and stock reservations.
+ * Stock reservation precedes payment — scarcity is the core business constraint.
+ */
+config {
+    title "Arcadia Editions - Catalog Products"
+    basePackage "com.arcadiaeditions.catalog.products"
+}
+
+@aggregate
+@lifecycle(field: status, initial: AVAILABLE)
+entity Product {
+    sku String required unique
+    name String required
+    description String
+    price BigDecimal required
+    stockQuantity Integer required
+    status ProductStatus required
+    edition String
+    dropDate Instant
+}
+
+enum ProductStatus {
+    AVAILABLE, RESERVED, SOLD_OUT, DISCONTINUED
+}
+
+// == Inputs =============================
+
+input ReserveStockInput {
+    quantity Integer required
+    orderId String required
+}
+
+input ReleaseStockInput {
+    quantity Integer required
+    orderId String required
+}
+
+// == Services =============================
+
+@rest("/products")
+service CatalogProductsService for (Product) {
+    @get
+    listProducts() Product[]
+
+    @get("/{productId}")
+    getProduct(id) Product?
+
+    /** Reserve stock before payment — stock is the scarce resource during a hot drop */
+    @asyncapi({channel: "ReserveStockCommandsChannel", topic: "catalog.commands.reserve-stock"})
+    @transition(from: AVAILABLE, to: RESERVED)
+    @transition(from: AVAILABLE, to: SOLD_OUT)
+    reserveStock(id, ReserveStockInput) Product withEvents [StockReserved | StockUnavailable]
+
+    /** Release reserved stock on payment failure or timeout — compensation command */
+    @asyncapi({channel: "ReleaseStockCommandsChannel", topic: "catalog.commands.release-stock"})
+    @transition(from: RESERVED, to: AVAILABLE)
+    releaseStock(id, ReleaseStockInput) Product withEvents StockReleased
+}
+
+// == Events =============================
+
+@asyncapi({channel: "CatalogEventsChannel", topic: "catalog.events.stock-reserved"})
+event StockReserved {
+    productId String
+    orderId String
+    quantity Integer
+    reservedAt Instant
+}
+
+@asyncapi({channel: "CatalogEventsChannel", topic: "catalog.events.stock-unavailable"})
+event StockUnavailable {
+    productId String
+    orderId String
+    requestedQuantity Integer
+    availableQuantity Integer
+}
+
+@asyncapi({channel: "CatalogEventsChannel", topic: "catalog.events.stock-released"})
+event StockReleased {
+    productId String
+    orderId String
+    quantity Integer
+    releasedAt Instant
+}

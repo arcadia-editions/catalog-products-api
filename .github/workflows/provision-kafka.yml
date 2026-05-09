@@ -1,0 +1,34 @@
+name: Provision Kafka
+
+on:
+#  push:
+#    branches:
+#      - develop
+#    tags:
+#      - rc-*
+#      - v*
+#    paths:
+#      - asyncapi.yml
+#      - avro/**
+#      - .github/workflows/provision-kafka.yml
+#  pull_request:
+#    branches:
+#      - develop
+#    paths:
+#      - asyncapi.yml
+#      - avro/**
+#      - .github/workflows/provision-kafka.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  provision-kafka:
+    uses: arcadia-editions/asyncapi-ops-pipelines/.github/workflows/provision-kafka.yml@main
+    with:
+      service_repo: catalog-products-api
+      pipeline_ref: main
+      asyncapi_file: asyncapi.yml
+      server: ${{ (github.base_ref == 'develop' || github.ref_name == 'develop') && 'develop' || ((startsWith(github.ref_name, 'rc-') || contains(github.ref_name, '-rc.')) && 'pre' || (startsWith(github.ref_name, 'v') && 'prod' || 'staging')) }}
+    secrets: inherit

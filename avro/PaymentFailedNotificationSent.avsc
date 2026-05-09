@@ -1,0 +1,18 @@
+{
+  "type" : "record",
+  "name" : "PaymentFailedNotificationSent",
+  "namespace" : "io.arcadiaeditions.catalog.products.events.avro",
+  "fields" : [ {
+    "name" : "reservationId",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "orderId",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "customerId",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "occurredAt",
+    "type" : [ "null", "string" ]
+  } ]
+}
