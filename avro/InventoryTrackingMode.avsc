@@ -1,0 +1,6 @@
+{
+  "type" : "enum",
+  "name" : "InventoryTrackingMode",
+  "namespace" : "com.arcadiaeditions.catalog.products.events.avro",
+  "symbols" : [ "QUANTITY", "SERIALIZED" ]
+}

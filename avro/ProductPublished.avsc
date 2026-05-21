@@ -1,0 +1,33 @@
+{
+  "type" : "record",
+  "name" : "ProductPublished",
+  "namespace" : "com.arcadiaeditions.catalog.products.events.avro",
+  "fields" : [ {
+    "name" : "productId",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "sku",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "name",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "price",
+    "type" : [ "null", "double" ]
+  }, {
+    "name" : "currency",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "editionSize",
+    "type" : [ "null", "int" ]
+  }, {
+    "name" : "trackingMode",
+    "type" : "InventoryTrackingMode"
+  }, {
+    "name" : "launchAt",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "publishedAt",
+    "type" : [ "null", "string" ]
+  } ]
+}

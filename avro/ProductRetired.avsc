@@ -1,0 +1,15 @@
+{
+  "type" : "record",
+  "name" : "ProductRetired",
+  "namespace" : "com.arcadiaeditions.catalog.products.events.avro",
+  "fields" : [ {
+    "name" : "productId",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "sku",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "retiredAt",
+    "type" : [ "null", "string" ]
+  } ]
+}

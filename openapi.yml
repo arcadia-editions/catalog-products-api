@@ -1,8 +1,8 @@
 openapi: 3.0.1
 info:
-  title: "Catalog Products"
+  title: "Arcadia Editions - Product Catalog"
   version: 0.0.1
-  description: "Catalog Products"
+  description: "Arcadia Editions - Product Catalog"
   contact:
     email: email@domain.com
 servers:
@@ -20,73 +20,150 @@ servers:
         default: 'api'
 tags:
   - name: "Default"
-  - name: "CatalogProducts"
+  - name: "ProductCatalog"
 
 
 paths:
-  /stock-reservations/{reservationId}:
-    get:
-      operationId: getStockReservation
-      description: "getStockReservation"
-      tags: [CatalogProducts]
-      parameters:
-        - name: "reservationId"
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/StockReservation"
-  /stock-reservations:
+  /products:
     post:
-      operationId: reserveStock
-      description: "reserveStock"
-      tags: [CatalogProducts]
+      operationId: createProduct
+      description: "createProduct"
+      tags: [ProductCatalog]
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ReserveStockInput"
+              $ref: "#/components/schemas/CreateProductInput"
       responses:
         "201":
           description: "OK"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/StockReservation"
+                $ref: "#/components/schemas/Product"
+  /products/{id}:
+    put:
+      operationId: updateProduct
+      description: "updateProduct"
+      tags: [ProductCatalog]
+      parameters:
+        - name: "id"
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProductInput"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+  /products/{id}/publish:
+    post:
+      operationId: publishProduct
+      description: "publishProduct"
+      tags: [ProductCatalog]
+      parameters:
+        - name: "id"
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "201":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+  /products/{id}/retire:
+    post:
+      operationId: retireProduct
+      description: "retireProduct"
+      tags: [ProductCatalog]
+      parameters:
+        - name: "id"
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "201":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
 
 components:
   schemas:
-    ReserveStockInput:
+    CreateProductInput:
       type: "object"
-      x-business-entity: "ReserveStockInput"
+      x-business-entity: "CreateProductInput"
       required:
-      - "productId"
-      - "quantity"
-      - "customerId"
+      - "sku"
+      - "name"
+      - "price"
+      - "currency"
+      - "editionSize"
+      - "trackingMode"
       properties:
-        productId:
+        sku:
           type: "string"
-        quantity:
+        name:
+          type: "string"
+        description:
+          type: "string"
+        price:
+          type: "number"
+          format: "double"
+        currency:
+          type: "string"
+        editionSize:
           type: "integer"
           format: "int32"
-        customerId:
+        trackingMode:
+          $ref: "#/components/schemas/InventoryTrackingMode"
+        launchAt:
           type: "string"
-    StockReservation:
+          format: "date-time"
+    UpdateProductInput:
       type: "object"
-      x-business-entity: "StockReservation"
+      x-business-entity: "UpdateProductInput"
+      properties:
+        name:
+          type: "string"
+        description:
+          type: "string"
+        price:
+          type: "number"
+          format: "double"
+        currency:
+          type: "string"
+        launchAt:
+          type: "string"
+          format: "date-time"
+    Product:
+      type: "object"
+      x-business-entity: "Product"
       required:
-      - "orderId"
-      - "productId"
-      - "quantity"
-      - "customerId"
+      - "sku"
+      - "name"
+      - "price"
+      - "currency"
+      - "editionSize"
+      - "trackingMode"
       - "status"
       properties:
         id:
@@ -98,33 +175,40 @@ components:
           default: "null"
           description: "Version of the document (required in PUT for concurrency control,\
             \ should be null in POSTs)."
-        orderId:
+        sku:
           type: "string"
-        productId:
+        name:
           type: "string"
-        quantity:
+        description:
+          type: "string"
+        price:
+          type: "number"
+          format: "double"
+        currency:
+          type: "string"
+        editionSize:
           type: "integer"
           format: "int32"
-        customerId:
+        trackingMode:
+          $ref: "#/components/schemas/InventoryTrackingMode"
+        launchAt:
           type: "string"
+          format: "date-time"
         status:
-          $ref: "#/components/schemas/StockReservationStatus"
-        reservedAt:
-          type: "string"
-          format: "date-time"
-        releasedAt:
-          type: "string"
-          format: "date-time"
-        cancellationReason:
-          type: "string"
-    StockReservationStatus:
+          $ref: "#/components/schemas/ProductStatus"
+    ProductStatus:
       type: "string"
-      x-business-entity: "StockReservationStatus"
+      x-business-entity: "ProductStatus"
       enum:
-      - "PENDING"
-      - "RESERVED"
-      - "UNAVAILABLE"
-      - "CANCELLED"
+      - "DRAFT"
+      - "PUBLISHED"
+      - "RETIRED"
+    InventoryTrackingMode:
+      type: "string"
+      x-business-entity: "InventoryTrackingMode"
+      enum:
+      - "QUANTITY"
+      - "SERIALIZED"
 
     Page:
       type: object
