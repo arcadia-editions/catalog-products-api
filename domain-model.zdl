@@ -1,4 +1,5 @@
 config {
+    id "urn:com.arcadiaeditions.catalog.products"
     title "Arcadia Editions - Product Catalog"
     basePackage "com.arcadiaeditions.catalog.products"
     persistence jpa
@@ -13,6 +14,11 @@ config {
             includeCloudEventsHeaders true
             includeKafkaCommonHeaders true
             targetFile "./asyncapi.yml"
+        }
+        ZDLToAsyncAPIClientPlugin {
+            id "urn:com.arcadiaeditions.catalog.products:client"
+            title "Arcadia Editions - Product Catalog - AsyncAPI Client"
+            targetFile "./asyncapi-client.yml"
         }
         /** Generates an OpenAPI 3.0 specification from this ZDL model. */
         ZDLToOpenAPIPlugin {
@@ -93,7 +99,7 @@ service ProductCatalogService for (Product) {
     retireProduct(id) Product withEvents ProductRetired
 }
 
-@asyncapi({ channel: "ProductPublishedEventsChannel", topic: "catalog-products.events.product-published" })
+@asyncapi({ channel: "ProductPublishedChannel", topic: "catalog-products.events.product-published" })
 event ProductPublished {
     productId String
     sku String
@@ -106,7 +112,7 @@ event ProductPublished {
     publishedAt Instant
 }
 
-@asyncapi({ channel: "ProductRetiredEventsChannel", topic: "catalog-products.events.product-retired" })
+@asyncapi({ channel: "ProductRetiredChannel", topic: "catalog-products.events.product-retired" })
 event ProductRetired {
     productId String
     sku String

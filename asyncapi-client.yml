@@ -1,0 +1,14 @@
+asyncapi: 3.0.0
+id: urn:com.arcadiaeditions.catalog.products:client
+info:
+  title: "Arcadia Editions - Product Catalog - AsyncAPI Client"
+  version: 1.0.0
+  description: "Consumed AsyncAPI channels for Arcadia Editions - Product Catalog."
+
+channels:
+
+
+
+operations:
+
+
