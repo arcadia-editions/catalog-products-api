@@ -1,4 +1,5 @@
 asyncapi: 3.0.0
+id: urn:com.arcadiaeditions:catalog:products:asyncapi
 info:
   title: "Arcadia Editions - Product Catalog"
   version: 0.0.1
@@ -23,12 +24,14 @@ channels:
 operations:
   onProductPublished:
     action: send
+    x-principal: sa_account
     tags:
       - name: ProductCatalog
     channel:
       $ref: '#/channels/ProductPublishedEventsChannel'
   onProductRetired:
     action: send
+    x-principal: sa_account
     tags:
       - name: ProductCatalog
     channel:
@@ -89,5 +92,4 @@ components:
             type: string
             description: Timestamp of when the event happened
             x-runtime-expression: $message.payload#{T(java.time.Instant).now().toString()}
-
 

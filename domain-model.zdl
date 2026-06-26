@@ -1,5 +1,5 @@
 config {
-    id "urn:com.arcadiaeditions.catalog.products"
+    id "urn:com.arcadiaeditions:catalog:products"
     title "Arcadia Editions - Product Catalog"
     basePackage "com.arcadiaeditions.catalog.products"
     persistence jpa
@@ -7,6 +7,7 @@ config {
     plugins {
         /** Generates an AsyncAPI v3 specification from this ZDL model. */
         ZDLToAsyncAPIPlugin {
+            id "urn:com.arcadiaeditions:catalog:products:asyncapi"
             schemaFormat avro
             idType integer
             idTypeFormat int64
@@ -16,7 +17,7 @@ config {
             targetFile "./asyncapi.yml"
         }
         ZDLToAsyncAPIClientPlugin {
-            id "urn:com.arcadiaeditions.catalog.products:client"
+            id "urn:com.arcadiaeditions:catalog:products:asyncapi:client"
             title "Arcadia Editions - Product Catalog - AsyncAPI Client"
             targetFile "./asyncapi-client.yml"
         }
@@ -99,7 +100,7 @@ service ProductCatalogService for (Product) {
     retireProduct(id) Product withEvents ProductRetired
 }
 
-@asyncapi({ channel: "ProductPublishedChannel", topic: "catalog-products.events.product-published" })
+@asyncapi({ channel: "product-published-event-v1", topic: "catalog-products.product-published.event.avro.v1" })
 event ProductPublished {
     productId String
     sku String
@@ -112,7 +113,7 @@ event ProductPublished {
     publishedAt Instant
 }
 
-@asyncapi({ channel: "ProductRetiredChannel", topic: "catalog-products.events.product-retired" })
+@asyncapi({ channel: "product-retired-event-v1", topic: "catalog-products.product-retired.event.avro.v1" })
 event ProductRetired {
     productId String
     sku String

@@ -22,7 +22,12 @@
     "type" : [ "null", "int" ]
   }, {
     "name" : "trackingMode",
-    "type" : "InventoryTrackingMode"
+    "type" : {
+      "type" : "enum",
+      "name" : "InventoryTrackingMode",
+      "namespace" : "com.arcadiaeditions.catalog.products.events.avro",
+      "symbols" : [ "QUANTITY", "SERIALIZED" ]
+    }
   }, {
     "name" : "launchAt",
     "type" : [ "null", "string" ]
