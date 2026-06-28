@@ -1,0 +1,37 @@
+name: API-first artifact validation
+
+on:
+  pull_request:
+    paths:
+      - "**/*.zdl"
+      - "**/*.zfl"
+      - "**/*.yml"
+      - "**/*.yaml"
+      - "**/*.avsc"
+      - .github/workflows/artifact-ci.yml
+      - .github/workflows/artifact-release.yml
+  push:
+    branches: ["**"]
+    paths:
+      - "**/*.zdl"
+      - "**/*.zfl"
+      - "**/*.yml"
+      - "**/*.yaml"
+      - "**/*.avsc"
+      - .github/workflows/artifact-ci.yml
+      - .github/workflows/artifact-release.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    uses: arcadia-editions/api-product-workflows/.github/workflows/artifact-ci.yml@main
+    with:
+      workflow_ref: main
+      architecture_manifest_uri: https://raw.githubusercontent.com/arcadia-editions/arcadia-editions-architecture/main/zenwave-architecture.yml
+      base_sha: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+      head_sha: ${{ github.sha }}
+      full_validation: ${{ github.event_name == 'workflow_dispatch' }}
+    secrets: inherit

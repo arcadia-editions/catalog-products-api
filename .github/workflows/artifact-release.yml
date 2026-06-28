@@ -1,0 +1,40 @@
+name: Release API-first artifact or AsyncAPI bundle
+
+on:
+  workflow_dispatch:
+    inputs:
+      artifact:
+        description: Path without extension or artifactId. asyncapi-all bundles asyncapi.yml and asyncapi-client.yml together.
+        required: true
+        type: string
+      version:
+        description: Release version without a v prefix.
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: arcadia-editions/api-product-workflows/.github/workflows/artifact-release.yml@main
+    with:
+      workflow_ref: main
+      artifact: ${{ inputs.artifact }}
+      version: ${{ inputs.version }}
+      default_branch: main
+      architecture_manifest_uri: https://raw.githubusercontent.com/arcadia-editions/arcadia-editions-architecture/main/zenwave-architecture.yml
+      architecture_repository: arcadia-editions/arcadia-editions-architecture
+    secrets:
+      checkout_token: ${{ secrets.ARTIFACT_WORKFLOWS_CHECKOUT_TOKEN }}
+      release_token: ${{ secrets.ARTIFACT_RELEASE_TOKEN }}
+      architecture_token: ${{ secrets.ARCHITECTURE_APP_TOKEN }}
+      maven_username: ${{ secrets.MAVEN_REPOSITORY_USERNAME }}
+      maven_password_or_token: ${{ secrets.MAVEN_REPOSITORY_PASSWORD_OR_TOKEN }}
+      apicurio_username: ${{ secrets.APICURIO_USERNAME }}
+      apicurio_password_or_token: ${{ secrets.APICURIO_PASSWORD_OR_TOKEN }}
+      artifactory_username: ${{ secrets.ARTIFACTORY_USERNAME }}
+      artifactory_password_or_token: ${{ secrets.ARTIFACTORY_PASSWORD_OR_TOKEN }}
