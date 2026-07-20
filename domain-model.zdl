@@ -8,17 +8,31 @@ config {
         /** Generates an AsyncAPI v3 specification from this ZDL model. */
         ZDLToAsyncAPIPlugin {
             id "urn:com.arcadiaeditions:catalog:products:asyncapi"
+            applicationExtensions """
+            x-application-bindings:
+              x-principal: catalog_products
+              x-clientId: catalog_products
+              x-groupId: catalog_products
+            """
             schemaFormat avro
             idType integer
             idTypeFormat int64
             avroPackage com.arcadiaeditions.catalog.products.events.avro
             includeCloudEventsHeaders true
             includeKafkaCommonHeaders true
+            asyncapiOverlayFiles "https://raw.githubusercontent.com/arcadia-editions/api-contract-commons/refs/heads/main/asyncapi-overlay.yml"
             targetFile "./asyncapi.yml"
         }
         ZDLToAsyncAPIClientPlugin {
             id "urn:com.arcadiaeditions:catalog:products:asyncapi:client"
+            applicationExtensions """
+            x-application-bindings:
+              x-principal: catalog_products
+              x-clientId: catalog_products
+              x-groupId: catalog_products
+            """
             title "Arcadia Editions - Product Catalog - AsyncAPI Client"
+            asyncapiOverlayFiles "https://raw.githubusercontent.com/arcadia-editions/api-contract-commons/refs/heads/main/asyncapi-client-overlay.yml"
             targetFile "./asyncapi-client.yml"
         }
         /** Generates an OpenAPI 3.0 specification from this ZDL model. */

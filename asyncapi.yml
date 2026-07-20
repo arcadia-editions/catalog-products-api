@@ -1,42 +1,59 @@
-asyncapi: 3.0.0
+asyncapi: 3.1.0
 id: urn:com.arcadiaeditions:catalog:products:asyncapi
+
 info:
-  title: "Arcadia Editions - Product Catalog"
+  title: Arcadia Editions - Product Catalog
   version: 0.0.1
   tags:
-    - name: "Default"
-    - name: "ProductCatalog"
+  - name: Default
+  - name: ProductCatalog
+
+servers:
+  develop:
+    $ref: https://raw.githubusercontent.com/arcadia-editions/api-contract-commons/refs/heads/main/asyncapi-master.yml#/servers/develop
+
+x-application-bindings:
+  x-principal: catalog_products
+  x-clientId: catalog_products
+  x-groupId: catalog_products
 
 defaultContentType: application/json
 
 channels:
-  ProductPublishedEventsChannel:
-    address: "catalog-products.events.product-published"
+  product-published-event-v1:
+    address: catalog-products.product-published.event.avro.v1
     messages:
       ProductPublishedMessage:
-        $ref: '#/components/messages/ProductPublishedMessage'
-  ProductRetiredEventsChannel:
-    address: "catalog-products.events.product-retired"
+        $ref: "#/components/messages/ProductPublishedMessage"
+    x-traits:
+    - $ref: https://raw.githubusercontent.com/arcadia-editions/api-contract-commons/refs/heads/main/asyncapi-channel-traits.yml#/components/channelTraits/kafkaTopicS
+    - $ref: https://raw.githubusercontent.com/arcadia-editions/api-contract-commons/refs/heads/main/asyncapi-channel-traits.yml#/components/channelTraits/kafkaTopicRetained
+  product-retired-event-v1:
+    address: catalog-products.product-retired.event.avro.v1
     messages:
       ProductRetiredMessage:
-        $ref: '#/components/messages/ProductRetiredMessage'
+        $ref: "#/components/messages/ProductRetiredMessage"
+    x-traits:
+    - $ref: https://raw.githubusercontent.com/arcadia-editions/api-contract-commons/refs/heads/main/asyncapi-channel-traits.yml#/components/channelTraits/kafkaTopicS
+    - $ref: https://raw.githubusercontent.com/arcadia-editions/api-contract-commons/refs/heads/main/asyncapi-channel-traits.yml#/components/channelTraits/kafkaTopicRetained
 
 operations:
   onProductPublished:
     action: send
-    x-principal: sa_account
     tags:
-      - name: ProductCatalog
+    - name: ProductCatalog
     channel:
-      $ref: '#/channels/ProductPublishedEventsChannel'
+      $ref: "#/channels/product-published-event-v1"
+    traits:
+    - $ref: "#/components/operationTraits/clientIdAndPrincipal"
   onProductRetired:
     action: send
-    x-principal: sa_account
     tags:
-      - name: ProductCatalog
+    - name: ProductCatalog
     channel:
-      $ref: '#/channels/ProductRetiredEventsChannel'
-
+      $ref: "#/channels/product-retired-event-v1"
+    traits:
+    - $ref: "#/components/operationTraits/clientIdAndPrincipal"
 
 components:
   messages:
@@ -45,51 +62,29 @@ components:
       title: ""
       summary: ""
       traits:
-        - $ref: '#/components/messageTraits/CommonHeaders'
+      - $ref: "#/components/messageTraits/CommonHeaders"
       payload:
         schemaFormat: application/vnd.apache.avro+json;version=1.9.0
         schema:
-          $ref: "avro/ProductPublished.avsc"
+          $ref: avro/ProductPublished.avsc
     ProductRetiredMessage:
       name: ProductRetiredMessage
       title: ""
       summary: ""
       traits:
-        - $ref: '#/components/messageTraits/CommonHeaders'
+      - $ref: "#/components/messageTraits/CommonHeaders"
       payload:
         schemaFormat: application/vnd.apache.avro+json;version=1.9.0
         schema:
-          $ref: "avro/ProductRetired.avsc"
-
+          $ref: avro/ProductRetired.avsc
   messageTraits:
     CommonHeaders:
-      headers:
-        type: object
-        properties:
-          kafka_messageKey:
-            type: "integer"
-            format: "int64"
-            description: This header value will be populated automatically at runtime
-            x-runtime-expression: $message.payload#/id
-          # CloudEvents Attributes
-          ce-id:
-            type: string
-            description: Unique identifier for the event
-            x-runtime-expression: $message.payload#{#this.id}
-          ce-source:
-            type: string
-            description: URI identifying the context where event happened
-            x-runtime-expression: $message.payload#{"ProductCatalog"}
-          ce-specversion:
-            type: string
-            description: CloudEvents specification version
-            x-runtime-expression: $message.payload#{"1.0"}
-          ce-type:
-            type: string
-            description: Event type
-            x-runtime-expression: $message.payload#{#this.getClass().getSimpleName()}
-          ce-time:
-            type: string
-            description: Timestamp of when the event happened
-            x-runtime-expression: $message.payload#{T(java.time.Instant).now().toString()}
-
+      $ref: https://raw.githubusercontent.com/arcadia-editions/api-contract-commons/refs/heads/main/asyncapi-message-traits.yml#/components/messageTraits/CommonHeaders
+  operationTraits:
+    clientIdAndPrincipal:
+      bindings:
+        kafka:
+          x-principal:
+            $ref: "#/x-application-bindings/x-principal"
+          x-groupId:
+            $ref: "#/x-application-bindings/x-groupId"
