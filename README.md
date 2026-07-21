@@ -12,19 +12,19 @@ contracts.
 - [openapi.yml](./openapi.yml): HTTP API contract generated from the ZDL model
 - [avro/](./avro/): Avro event schemas referenced by the AsyncAPI document
 - [.github/workflows/provision-kafka.yml](./.github/workflows/provision-kafka.yml): workflow entrypoint for shared Kafka provisioning
-- [scripts/README.md](./scripts/README.md): script-specific notes kept in the scripts folder
-- [scripts/run-kafka-pipeline-local.sh](./scripts/run-kafka-pipeline-local.sh): local Git Bash helper for the generation flow
+- [scripts/README.md](../api-product-workflows/scripts/README.md): script-specific notes kept in the scripts folder
+- [provision-kafka-local.sh](../api-product-workflows/scripts/provision-kafka-local.sh): local Git Bash helper for the generation flow
 
 ## Local usage
 
 From Git Bash, after exporting the required Terraform and Confluent environment variables:
 
 ```bash
-./scripts/run-kafka-pipeline-local.sh develop
+../api-product-workflows/scripts/provision-kafka-local.sh develop
 ```
 
 To apply the generated Terraform locally:
 
 ```bash
-APPLY_MODE=true ./scripts/run-kafka-pipeline-local.sh develop
+APPLY_MODE=true ../api-product-workflows/scripts/provision-kafka-local.sh develop
 ```

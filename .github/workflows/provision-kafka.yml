@@ -25,7 +25,7 @@ permissions:
 
 jobs:
   provision-kafka:
-    uses: arcadia-editions/asyncapi-ops-pipelines/.github/workflows/provision-kafka.yml@main
+    uses: arcadia-editions/api-product-workflows/.github/workflows/provision-kafka.yml@main
     with:
       service_repo: catalog-products-api
       pipeline_ref: main
