@@ -23,19 +23,21 @@ channels:
   product-published-event-v1:
     address: catalog-products.product-published.event.avro.v1
     messages:
-      ProductPublishedMessage:
-        $ref: "#/components/messages/ProductPublishedMessage"
+      ProductPublishedEvent:
+        $ref: "#/components/messages/ProductPublishedEvent"
     x-traits:
     - $ref: https://raw.githubusercontent.com/arcadia-editions/api-contract-commons/refs/heads/main/asyncapi-channel-traits.yml#/components/channelTraits/kafkaTopicS
     - $ref: https://raw.githubusercontent.com/arcadia-editions/api-contract-commons/refs/heads/main/asyncapi-channel-traits.yml#/components/channelTraits/kafkaTopicRetained
+    x-visibility: global
   product-retired-event-v1:
     address: catalog-products.product-retired.event.avro.v1
     messages:
-      ProductRetiredMessage:
-        $ref: "#/components/messages/ProductRetiredMessage"
+      ProductRetiredEvent:
+        $ref: "#/components/messages/ProductRetiredEvent"
     x-traits:
     - $ref: https://raw.githubusercontent.com/arcadia-editions/api-contract-commons/refs/heads/main/asyncapi-channel-traits.yml#/components/channelTraits/kafkaTopicS
     - $ref: https://raw.githubusercontent.com/arcadia-editions/api-contract-commons/refs/heads/main/asyncapi-channel-traits.yml#/components/channelTraits/kafkaTopicRetained
+    x-visibility: global
 
 operations:
   onProductPublished:
@@ -57,8 +59,8 @@ operations:
 
 components:
   messages:
-    ProductPublishedMessage:
-      name: ProductPublishedMessage
+    ProductPublishedEvent:
+      name: ProductPublishedEvent
       title: ""
       summary: ""
       traits:
@@ -67,8 +69,8 @@ components:
         schemaFormat: application/vnd.apache.avro+json;version=1.9.0
         schema:
           $ref: avro/ProductPublished.avsc
-    ProductRetiredMessage:
-      name: ProductRetiredMessage
+    ProductRetiredEvent:
+      name: ProductRetiredEvent
       title: ""
       summary: ""
       traits:
