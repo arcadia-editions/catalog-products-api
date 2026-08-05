@@ -1,5 +1,6 @@
 config {
     id "urn:com.arcadiaeditions:catalog:products"
+    version "0.1.0"
     title "Arcadia Editions - Product Catalog"
     basePackage "com.arcadiaeditions.catalog.products"
     persistence jpa

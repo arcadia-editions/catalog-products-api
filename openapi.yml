@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: "Arcadia Editions - Product Catalog"
-  version: 0.0.1
+  version: 0.1.0
   description: "Arcadia Editions - Product Catalog"
   contact:
     email: email@domain.com
