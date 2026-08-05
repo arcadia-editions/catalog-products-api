@@ -5,8 +5,8 @@ info:
   version: 0.1.0
   description: "Consumed AsyncAPI channels for Arcadia Editions - Product Catalog."
 
-channels:
+channels: {}
 
 
 
-operations:
+operations: {}
