@@ -34,5 +34,4 @@ jobs:
       base_sha: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
       head_sha: ${{ github.sha }}
       full_validation: ${{ github.event_name == 'workflow_dispatch' }}
-    secrets:
-      checkout_token: ${{ secrets.ARTIFACT_WORKFLOWS_CHECKOUT_TOKEN }}
+    secrets: inherit
