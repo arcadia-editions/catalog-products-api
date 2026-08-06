@@ -27,6 +27,7 @@ paths:
   /products:
     post:
       operationId: createProduct
+      summary: "createProduct"
       description: "createProduct"
       tags: [ProductCatalog]
       requestBody:
@@ -45,6 +46,7 @@ paths:
   /products/{id}:
     put:
       operationId: updateProduct
+      summary: "updateProduct"
       description: "updateProduct"
       tags: [ProductCatalog]
       parameters:
@@ -70,6 +72,7 @@ paths:
   /products/{id}/publish:
     post:
       operationId: publishProduct
+      summary: "publishProduct"
       description: "publishProduct"
       tags: [ProductCatalog]
       parameters:
@@ -89,6 +92,7 @@ paths:
   /products/{id}/retire:
     post:
       operationId: retireProduct
+      summary: "retireProduct"
       description: "retireProduct"
       tags: [ProductCatalog]
       parameters:
