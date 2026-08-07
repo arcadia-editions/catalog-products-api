@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       artifact:
-        description: Resolved artifactId from the architecture manifest.
+        description: Path without extension or artifactId in zenwave-architecture.yml.
         required: true
         type: string
       version:
@@ -12,7 +12,7 @@ on:
         required: true
         type: string
       nextVersion:
-        description: Next development version ending in -SNAPSHOT.
+        description: Next development version, greater than version.
         required: true
         type: string
 
