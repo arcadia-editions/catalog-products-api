@@ -3,7 +3,7 @@ id: urn:com.arcadiaeditions:catalog:products:asyncapi
 
 info:
   title: Arcadia Editions - Product Catalog
-  version: "0.2.0"
+  version: "0.3.0"
   tags:
   - name: Default
   - name: ProductCatalog
