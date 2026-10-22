@@ -89,7 +89,7 @@ input UpdateProductInput {
     launchAt Instant
 }
 
-output ProductPublished {
+output ProductPublishedResponse {
     productId String
     sku String
     publishedAt Instant

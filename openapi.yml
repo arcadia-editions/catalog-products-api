@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: "Arcadia Editions - Product Catalog"
-  version: 0.1.0
+  version: 0.0.1
   description: "Arcadia Editions - Product Catalog"
   contact:
     email: email@domain.com
@@ -27,7 +27,6 @@ paths:
   /products:
     post:
       operationId: createProduct
-      summary: "createProduct"
       description: "createProduct"
       tags: [ProductCatalog]
       requestBody:
@@ -46,7 +45,6 @@ paths:
   /products/{id}:
     put:
       operationId: updateProduct
-      summary: "updateProduct"
       description: "updateProduct"
       tags: [ProductCatalog]
       parameters:
@@ -72,7 +70,6 @@ paths:
   /products/{id}/publish:
     post:
       operationId: publishProduct
-      summary: "publishProduct"
       description: "publishProduct"
       tags: [ProductCatalog]
       parameters:
@@ -92,7 +89,6 @@ paths:
   /products/{id}/retire:
     post:
       operationId: retireProduct
-      summary: "retireProduct"
       description: "retireProduct"
       tags: [ProductCatalog]
       parameters:
